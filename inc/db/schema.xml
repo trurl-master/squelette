@@ -1,0 +1,42 @@
+<database name="main" defaultIdMethod="native" namespace="Squelette">
+
+	<table name="config">
+		<column name="key" type="varchar" size="64" required="true" primaryKey="true"/>
+		<column name="value" type="longvarchar" />
+		<column name="type" type="varchar" size="64" required="true" />
+		<column name="label" type="varchar" size="64" />
+		<column name="note" type="varchar" size="64" />
+		<column name="group" type="varchar" size="32" />
+		<column name="params" type="varchar" size="1024" />
+	</table>
+
+	<table name="meta">
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+		<column name="name" type="varchar" size="255" required="true" />
+		<column name="title" type="varchar" size="255" required="true" />
+		<column name="description" type="varchar" size="1024" />
+		<column name="keywords" type="varchar" size="1024" />
+		<column name="custom" type="longvarchar" />
+		<unique name="name">
+			<unique-column name="name" />
+		</unique>
+	</table>
+
+	<table name="user">
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+		<column name="email" type="varchar" size="255" required="true" />
+		<column name="password" type="varchar" size="255" required="true" />
+		<column name="first_name" type="varchar" size="255" required="true" />
+		<column name="last_name" type="varchar" size="255" required="true" />
+		<column name="dt_created" type="timestamp" required="true"/>
+		<column name="dt_last_signin" type="timestamp" />
+		<column name="hybridauth_provider_name" type="varchar" size="255" />
+		<column name="hybridauth_provider_uid" type="varchar" size="255" />
+		<column name="init" type="char" size="128" />
+		<column name="restore" type="char" size="128" />
+		<column name="privilege" type="integer" size="255" required="true" defaultValue="1" />
+	</table>
+
+	<behavior name="propel_js" />
+
+</database>

@@ -1,0 +1,3 @@
+# squelette
+
+Squelette skeleton application

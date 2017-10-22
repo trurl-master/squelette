@@ -1,0 +1,19 @@
+{
+    "name": "squelette",
+    "authors": [
+        {
+            "name": "Ivan Galyatin",
+            "email": "trurl-master@ya.ru"
+        }
+    ],
+    "require": {
+        "propel/propel": "~2.0@dev",
+        "monolog/monolog": "^1.23",
+        "athens/propel-js": "0.*",
+        "siriusphp/upload": "^2.1",
+        "phpmailer/phpmailer": "~6.0"
+    },
+    "autoload": {
+        "classmap": ["inc/db/generated-classes/", "inc/db/generated-api/", "inc/classes"]
+    }
+}

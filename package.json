@@ -1,0 +1,43 @@
+{
+  "name": "squelette",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-2": "^6.22.0",
+    "clean-webpack-plugin": "^0.1.16",
+    "commander": "^2.11.0",
+    "css-loader": "^0.28.0",
+    "exports-loader": "^0.6.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "imports-loader": "^0.7.1",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.3",
+    "node-sass": "^4.5.2",
+    "postcss-loader": "^2.0.6",
+    "sass-loader": "^6.0.3",
+    "script-loader": "^0.7.0",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.4.1",
+    "webpack-build-notifier": "^0.1.16",
+    "chalk": "^2.2.0",
+    "commander": "^2.11.0"
+  },
+  "bin": {
+    "squelette": "./squelette.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "squelette": "./squelette.js"
+  },
+  "author": "Ivan Galiatin",
+  "license": "ISC"
+}
