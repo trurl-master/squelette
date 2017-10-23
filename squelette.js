@@ -43,6 +43,10 @@ function init(/*namespace, */options) {
 	console.log(chalk.inverse('npm install'));
 	execSync('npm install');
 
+	//
+	console.log(chalk.inverse('composer install'))
+	execSync('composer install');
+
 	// build propel
 	process.chdir('inc/db');
 	console.log(chalk.inverse('propel sql:build'));
@@ -73,8 +77,8 @@ function init(/*namespace, */options) {
 
 	// composer
 	process.chdir('../..');
-	console.log(chalk.inverse('composer install'))
-	execSync('composer install');
+	console.log(chalk.inverse('composer dump-autoload -o'))
+	execSync('composer dump-autoload -o');
 
 }
 
