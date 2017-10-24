@@ -7,7 +7,8 @@ const path = require('path');
 const execSync = require('child_process').execSync;
 
 //
-const propel_path = '../../vendor/bin/propel';
+const propel_path_from_root = 'vendor/bin/propel'
+const propel_path = '../../' + propel_path_from_root;
 
 
 // function cmd(command) {
@@ -23,8 +24,19 @@ const propel_path = '../../vendor/bin/propel';
 //   }
 // }
 
+function log(type, message) {
+	switch (type) {
+		case 'command':
+			console.log(chalk.inverse('Command') + ' ' + message)
+			break;
+		case 'message':
+			console.log(chalk.inverse('Message') + ' ' + message)
+			break;
+	}
+}
 
-function init(/*namespace, */options) {
+
+function init(/*namespace, */options, a,b,c) {
 
 	// rename db connection and namespace
 	// fs.readFile('./inc/db/schema.xml', 'utf8', function (err, data) {
@@ -40,28 +52,25 @@ function init(/*namespace, */options) {
 	// });
 
 	// npm install
-	console.log(chalk.inverse('npm install'));
-	execSync('npm install');
+	// console.log(chalk.inverse('npm install'));
+	// execSync('npm install');
 
 	//
-	console.log(chalk.inverse('composer install'))
+	log('command', 'composer install');
 	execSync('composer install');
 
 	// build propel
+
 	process.chdir('inc/db');
-	console.log(chalk.inverse('propel sql:build'));
+	log('command', 'propel sql:build');
 	execSync(propel_path + ' sql:build');
-	console.log(chalk.inverse('propel model:build'));
+	log('command', 'propel model:build');
 	execSync(propel_path + ' model:build');
-	console.log(chalk.inverse('propel config:convert'));
+	log('command', 'propel config:convert');
 	execSync(propel_path + ' config:convert');
 
-	if (options.insert) {
-		execSync(propel_path + ' sql:insert');
-	}
-
 	// copy extended propel models over default propel ones
-	console.log(chalk.inverse('apply squelette model patches'));
+	log('message', 'apply squelette model patches');
 	const read = (dir) =>
 	  fs.readdirSync(dir)
 	    .reduce((files, file) =>
@@ -70,15 +79,48 @@ function init(/*namespace, */options) {
 	        files.concat(path.join(dir, file)),
 	      []);
 
-	read('./Squelette').forEach(function(filename) {
-		fs.createReadStream(filename).pipe(fs.createWriteStream('generated-classes/Squelette/' + path.basename(filename)));
-	})
+	execSync('cp -r ./Squelette/. ./generated-classes/Squelette/');
+	// read('./Squelette').forEach(function(filename) {
+	// 	fs.createReadStream(filename).pipe(fs.createWriteStream('generated-classes/Squelette/' + path.basename(filename)));
+	// })
 
+	if (options.createDb) {
+		execSync('mkdir -p data');
+		execSync('touch data/main.sqlite');
+		execSync(propel_path + ' sql:insert');
+		execSync('mv data ../../data');
+	}
 
-	// composer
 	process.chdir('../..');
-	console.log(chalk.inverse('composer dump-autoload -o'))
+
+	// add core classes to autoload
+
+	// process.chdir('../..');
+
+	log('message', 'modify composer.json to add autoloading of the core classes');
+	var composer_json = fs.readFileSync('composer.json', 'utf8');
+	composer_json = JSON.parse(composer_json);
+	if (typeof composer_json.autoload === 'undefined') {
+		composer_json.autoload = {};
+	}
+
+	if (typeof composer_json.autoload.classmap === 'undefined') {
+		composer_json.autoload.classmap = [];
+	}
+
+	composer_json.autoload.classmap.push(
+		"inc/db/generated-classes/",
+		"inc/db/generated-api/",
+		"inc/classes"
+	);
+
+	fs.writeFileSync('composer.json', JSON.stringify(composer_json, null, 4))
+
+	log('command', 'composer dump-autoload -o');
 	execSync('composer dump-autoload -o');
+
+	//
+	log('message', 'please edit inc/db/data/main.sqlite to fill out meta data entries');
 
 }
 
@@ -90,15 +132,15 @@ function refresh(what) {
 	process.chdir('inc/db');
 	switch (what) {
 		case 'db-model':
-			console.log(chalk.inverse('propel model:build'));
+			log('command', 'propel model:build');
 			execSync(propel_path + ' model:build');
 			break;
 		case 'db-config':
-			console.log(chalk.inverse('propel config:convert'));
+			log('command', 'propel config:convert');
 			execSync(propel_path + ' config:convert');
 			break;
 		default:
-			console.log(chalk.inverse('uknown property to refresh'))
+			log('message', 'uknown property to refresh');
 			break;
 	}
 
@@ -110,7 +152,7 @@ function refresh(what) {
 program
 	.command('init') // [namespace]')
 	.description('run init command for a new app')
-	.option("-i, --insert-sql", "Insert generated sql into database (overwriting everything there)")
+	.option("-c, --create-db", "Create db file and insert basic structure")
 	.action(init);
 
 program
