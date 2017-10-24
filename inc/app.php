@@ -245,16 +245,16 @@ class App {
 	//
 	public static function cssBundle($variant = '')
 	{
-		$variant_str = $variant ? $variant.'.' : '';
+		$variant_str = $variant ? $variant : 'main';
 
-		echo '<link href="/assets/bundles/', $variant_str, 'bundle.' , self::webpack($variant)['hash'] , '.css" rel="stylesheet">';
+		echo '<link href="/assets/bundles/bundle.', $variant_str, '.' , self::webpack($variant)['hash'] , '.css" rel="stylesheet">';
 	}
 
 	//
 	public static function jsBundle($variant = '')
 	{
 
-		$variant_str = $variant ? $variant.'.' : '';
+		$variant_str = $variant ? $variant : 'main';
 
 		?><script>
 			app = {
@@ -271,7 +271,7 @@ class App {
 				?>
 			}
 		</script>
-		<script src="/assets/bundles/<?=$variant_str?>bundle.<?=self::webpack($variant)['hash']?>.js" async></script><?php
+		<script src="/assets/bundles/bundle.<?=$variant_str?>.<?=self::webpack($variant)['hash']?>.js" async></script><?php
 	}
 
 }
