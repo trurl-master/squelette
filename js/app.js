@@ -3,19 +3,6 @@ import "babel-polyfill";
 import "../css/normalize.less";
 import "../css/main.less";
 
-import "../node_modules/slick-carousel/slick/slick.css";
-
-
-import picturefill from 'picturefill'
-import './libs/jquery.reflow';
-// import './libs/midnight';
-import './libs/jquery-ui.min.js';
-
-$(function () {
-	picturefill();
-});
-
-
 //
 var active_modules = require.context('[modules]/', true, /^((?!admin).)*\.js$/)
 var active_modules_list = active_modules.keys();
