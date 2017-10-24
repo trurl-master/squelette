@@ -88,7 +88,7 @@ module.exports = [
 			// ,questions: './js/app.1.js'
 		},
 		output: {
-			path: path.join(__dirname, "../web/assets/bundles/"),
+			path: path.join(__dirname, "assets/bundles/"),
 			filename: 'bundle.[name].[hash].js'
 		},
 		module: {
