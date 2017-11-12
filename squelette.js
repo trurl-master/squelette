@@ -97,11 +97,14 @@ function init(/*namespace, */options) {
 	if (options.createDb) {
 		cli('mkdir -p data');
 		cli('touch data/main.sqlite');
-		propel('sql:insert');
 		cli('mv data ../../data');
 	}
 
 	endDb();
+
+	if (options.createDb) {
+		propel('sql:insert');
+	}
 
 	// add core classes to autoload
 	log('message', 'modify composer.json to add autoloading of the core classes');
