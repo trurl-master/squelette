@@ -6,7 +6,7 @@ return [
             'connections' => [
                 'main' => [
                     'adapter'    => 'sqlite',
-                    'dsn'        => 'sqlite:/data/main.sqlite',
+                    'dsn'        => 'sqlite:' . realpath(getcwd() . '/../../data/main.sqlite'),
                     'user'       => '',
                     'password'   => '',
                     'settings'   => [

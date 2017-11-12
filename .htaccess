@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# final rewrite
+RewriteCond %{REQUEST_URI} !/assets/ [NC]
+RewriteCond %{REQUEST_URI} !/frames/ [NC]
+RewriteCond %{REQUEST_FILENAME} !500.html [NC]
+RewriteCond %{REQUEST_FILENAME} !404.html [NC]
+RewriteRule ^.* index.php [L,NC,QSA]

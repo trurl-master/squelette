@@ -117,7 +117,7 @@ module.exports = [
 		plugins: debug ?
 			[
 				new CleanWebpackPlugin(['bundles/*.*'], {
-					root: path.join(__dirname, "../web/assets/"),
+					root: path.join(__dirname, "../www/assets/"),
 					verbose: true,
 					dry: false,
 					exclude: ['.htaccess']
@@ -143,7 +143,7 @@ module.exports = [
 				})
 			] : [
 				new CleanWebpackPlugin(['bundles/*.*'], {
-					root: path.join(__dirname, "../web/assets/"),
+					root: path.join(__dirname, "../www/assets/"),
 					verbose: true,
 					dry: false,
 					exclude: ['.htaccess']

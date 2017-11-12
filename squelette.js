@@ -35,8 +35,29 @@ function log(type, message) {
 	}
 }
 
+function cli(command, options) {
+	log('command', command);
+	var result = execSync(command, options);
+	console.log(result.toString())
+}
 
-function init(/*namespace, */options, a,b,c) {
+function beginDb() {
+	process.chdir('inc/db');
+}
+
+function endDb() {
+	process.chdir('../..');
+}
+
+function propel(what) {
+	// log('command', 'propel ' + what);
+	cli(propel_path + ' ' + what, {
+		cwd: 'inc/db'
+	});
+}
+
+
+function init(/*namespace, */options) {
 
 	// rename db connection and namespace
 	// fs.readFile('./inc/db/schema.xml', 'utf8', function (err, data) {
@@ -51,25 +72,17 @@ function init(/*namespace, */options, a,b,c) {
 	// 	});
 	// });
 
-	// npm install
-	// console.log(chalk.inverse('npm install'));
-	// execSync('npm install');
-
 	//
-	log('command', 'composer install');
-	execSync('composer install');
+	cli('composer install');
 
 	// build propel
-
-	process.chdir('inc/db');
-	log('command', 'propel sql:build');
-	execSync(propel_path + ' sql:build');
-	log('command', 'propel model:build');
-	execSync(propel_path + ' model:build');
-	log('command', 'propel config:convert');
-	execSync(propel_path + ' config:convert');
+	propel('sql:build');
+	propel('model:build');
+	propel('config:convert');
 
 	// copy extended propel models over default propel ones
+	beginDb();
+
 	log('message', 'apply squelette model patches');
 	const read = (dir) =>
 	  fs.readdirSync(dir)
@@ -79,24 +92,18 @@ function init(/*namespace, */options, a,b,c) {
 	        files.concat(path.join(dir, file)),
 	      []);
 
-	execSync('cp -r ./Squelette/. ./generated-classes/Squelette/');
-	// read('./Squelette').forEach(function(filename) {
-	// 	fs.createReadStream(filename).pipe(fs.createWriteStream('generated-classes/Squelette/' + path.basename(filename)));
-	// })
+	cli('cp -r ./Squelette/. ./generated-classes/Squelette/');
 
 	if (options.createDb) {
-		execSync('mkdir -p data');
-		execSync('touch data/main.sqlite');
-		execSync(propel_path + ' sql:insert');
-		execSync('mv data ../../data');
+		cli('mkdir -p data');
+		cli('touch data/main.sqlite');
+		propel('sql:insert');
+		cli('mv data ../../data');
 	}
 
-	process.chdir('../..');
+	endDb();
 
 	// add core classes to autoload
-
-	// process.chdir('../..');
-
 	log('message', 'modify composer.json to add autoloading of the core classes');
 	var composer_json = fs.readFileSync('composer.json', 'utf8');
 	composer_json = JSON.parse(composer_json);
@@ -117,7 +124,7 @@ function init(/*namespace, */options, a,b,c) {
 	fs.writeFileSync('composer.json', JSON.stringify(composer_json, null, 4))
 
 	log('command', 'composer dump-autoload -o');
-	execSync('composer dump-autoload -o');
+	cli('composer dump-autoload -o');
 
 	//
 	log('message', 'please edit inc/db/data/main.sqlite to fill out meta data entries');
@@ -129,15 +136,12 @@ function init(/*namespace, */options, a,b,c) {
 function refresh(what) {
 
 	// refresh propel
-	process.chdir('inc/db');
 	switch (what) {
 		case 'db-model':
-			log('command', 'propel model:build');
-			execSync(propel_path + ' model:build');
+			propel('model:build');
 			break;
 		case 'db-config':
-			log('command', 'propel config:convert');
-			execSync(propel_path + ' config:convert');
+			propel('config:convert');
 			break;
 		default:
 			log('message', 'uknown property to refresh');
@@ -145,7 +149,6 @@ function refresh(what) {
 	}
 
 }
-
 
 
 //
@@ -157,9 +160,22 @@ program
 
 program
 	.command('refresh [what]')
-	.description('refresh some part of install')
+	.description('refresh some part of config')
 	.action(refresh)
 
+program
+	.command('diff')
+	.description('migration diff')
+	.action(function() {
+		propel('diff');
+	})
+
+program
+	.command('migrate')
+	.description('migration migrate')
+	.action(function() {
+		propel('migrate');
+	})
 
 program
 	.version('0.1.0')

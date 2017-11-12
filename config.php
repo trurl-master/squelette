@@ -2,7 +2,7 @@
 
 return [
     'is_production' => false,
-    'live_site' => 'http://squelette.dev',
+    'live_site' => '',
     'assets' => '/assets/',
     'root' => getcwd(),
     'webpack' => [
