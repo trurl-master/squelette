@@ -201,7 +201,7 @@ class UserAuth
 
 
 		//
-		$user = \Top50\UserQuery::create()->filterByEmail($_POST['email'])->findOne();
+		$user = \Squelette\UserQuery::create()->filterByEmail($_POST['email'])->findOne();
 
 		if (!$user) {
 			Valid::setError('password', 'Неверная пара логин/пароль');
@@ -301,9 +301,9 @@ class UserAuth
 
 
 		if (!\App::sendEmail(
-			'top50@readlivemagazine.com',
+			'',
 			$user->getEmail(),
-			'Top50ByLive. Активация аккаунта',
+			'Активация аккаунта',
 			'Благодарим за регистрацию!<br><br>'.
 			'Ваш пароль: ' . $password . '<br><br>'.
 			'Пожалуйста активируйте ваш аккаунт, пройдя по этой ссылке: <a href="' . $link . '">' . $link . '</a>'
@@ -399,9 +399,9 @@ class UserAuth
 
 		//
 		if (!\App::sendEmail(
-			'top50@readlivemagazine.com',
+			'',
 			$user->getEmail(),
-			'Top50ByLive. Восстановление пароля, шаг 1',
+			'Восстановление пароля, шаг 1',
 			'Поступил запрос на восстановление пароля.<br><br>'.
 			'Пожалуйста пройдите по этой ссылке, чтобы получить новый пароль: <a href="' . $link . '">' . $link . '</a>'
 		)) {
@@ -448,9 +448,9 @@ class UserAuth
 
 		//
 		if (!\App::sendEmail(
-			'top50@readlivemagazine.com',
+			'',
 			$user->getEmail(),
-			'Top50ByLive. Восстановление пароля, шаг 2',
+			'Восстановление пароля, шаг 2',
 			'Ваш новый пароль: ' . $password
 		)) {
 			die('Ошибка при отправке email');
