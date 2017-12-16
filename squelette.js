@@ -118,15 +118,17 @@ function init(/*namespace, */options) {
 		composer_json.autoload.classmap = [];
 	}
 
-	composer_json.autoload.classmap.push(
-		"inc/db/generated-classes/",
-		"inc/db/generated-api/",
-		"inc/classes"
-	);
+	if (composer_json.autoload.classmap.indexOf("inc/db/generated-classes/") === -1) {
+		composer_json.autoload.classmap.push(
+			"inc/db/generated-classes/",
+			"inc/db/generated-api/",
+			"inc/classes"
+		);
+	}
+
 
 	fs.writeFileSync('composer.json', JSON.stringify(composer_json, null, 4))
 
-	log('command', 'composer dump-autoload -o');
 	cli('composer dump-autoload -o');
 
 	//
@@ -142,6 +144,7 @@ function refresh(what) {
 	switch (what) {
 		case 'db-model':
 			propel('model:build');
+			cli('composer dump-autoload -o');
 			break;
 		case 'db-config':
 			propel('config:convert');
@@ -178,6 +181,13 @@ program
 	.description('migration migrate')
 	.action(function() {
 		propel('migrate');
+	})
+
+program
+	.command('migrate-back')
+	.description('migration roll back')
+	.action(function() {
+		propel('migration:down');
 	})
 
 program

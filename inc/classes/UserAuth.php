@@ -208,7 +208,7 @@ class UserAuth
 			return false;
 		}
 
-		if ($user->getInit() !== '') {
+		if ($user->getInit() !== null && $user->getInit() !== '') {
 			Valid::setError('password', 'Этот аккаунт пока не активирован');
 			return false;
 		}
@@ -225,14 +225,7 @@ class UserAuth
 
 		//
 		if (password_needs_rehash($user->getPassword(), PASSWORD_DEFAULT)) {
-			$rehashed_password = password_hash($auth_password, PASSWORD_DEFAULT);
-
-			if ($rehashed_password !== false) {
-				$user->setPassword($rehashed_password)->save();
-			} else {
-				Valid::setError('password', 'Внутренняя ошибка');
-				return false;
-			}
+			$user->setPassword($auth_password)->save();
 		}
 
 		self::setUser($user);

@@ -30,4 +30,9 @@ class User extends BaseUser
 	{
 		return $this->getPrivilege() === $privilege;
 	}
+
+	public function setPassword($password)
+	{
+		return parent::setPassword(password_hash($password, PASSWORD_DEFAULT));
+	}
 }

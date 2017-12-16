@@ -56,7 +56,7 @@ class Image {
             case 'jpg':
             case 'jpeg':
                 imageinterlace($dst_img, 1); // enables progressive jpeg
-                $result = imagejpeg($dst_img, $filename, self::JPEG_QUALITY);
+                $result = imagejpeg($dst_img, str_replace('jpeg', 'jpg', $filename), self::JPEG_QUALITY);
 
                 break;
             case 'png':

@@ -4,7 +4,7 @@ $serviceContainer->checkVersion('2.0.0-dev');
 $serviceContainer->setAdapterClass('main', 'sqlite');
 $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
 $manager->setConfiguration(array (
-  'dsn' => 'sqlite:/data/main.sqlite',
+  'dsn' => 'sqlite:/home/evan/sites/squelette.dev/www/data/main.sqlite',
   'user' => '',
   'password' => '',
   'settings' =>

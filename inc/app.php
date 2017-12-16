@@ -5,8 +5,6 @@ class App {
 
 	private static $config = array();
 	private static $modules = array();
-	private static $request = array();
-	// private static $query = array();
 	private static $data = array();
 	private static $db = null;
 	private static $webpack;
@@ -18,33 +16,25 @@ class App {
 	public static function init($config = array())
 	{
 
-		// parse url
-		$decoded_uri = rawurldecode($_SERVER['REQUEST_URI']);
-		$request = explode('?', $decoded_uri);
-		$requestPath = explode('/', trim($request[0], '/'));
+		\Squelette\Request::init();
 
 		//
 		self::$config = $config;
 		// self::$lang = array_shift($requestPath); // fetch language from request
 		self::$lang = 'ru';
-		self::$request = $requestPath; // request vars
 
 		if (isset($config['webpack']) && isset($config['webpack']['variants'])) {
 
-			self::$webpack = array(
-				'' => require "webpack.php"
-			);
+			self::$webpack = ['' => require "webpack.php"];
 
 			foreach ($config['webpack']['variants'] as $variant) {
 				self::$webpack[$variant] = require $variant . ".webpack.php";
 			}
+
 		} else {
 			self::$webpack = require "webpack.php"; // webpack hash value
 		}
 
-		// if (isset($request[1])) {
-		// 	parse_str($request[1], self::$query);
-		// }
 	}
 
 
@@ -56,44 +46,6 @@ class App {
 	//
 	public static function webpack($variant = '') {
 		return isset(self::$webpack[$variant]) ? self::$webpack[$variant] : self::$webpack;
-	}
-
-
-	//
-	public static function filterRequestPathParam($index, $filter, $options)
-	{
-
-		$param = self::requestPath($index, null);
-
-		if ($param === null) {
-			if (isset($options['optional']) && $options['optional'] === true) {
-				return true;
-			} else {
-				if (isset($options['if_empty_404']) && $options['if_empty_404'] === true) {
-					self::to404();
-				} else {
-					return false;
-				}
-			}
-		} else {
-			if (preg_match($filter, $param)) {
-				return true;
-			} else {
-				if (isset($options['if_fail_404']) && $options['if_fail_404'] === true) {
-					self::to404();
-				} else {
-
-					if (isset($options['if_fail'])) {
-						self::$request[$index] = $options['if_fail'];
-					} else {
-						self::$request[$index] = false;
-					}
-
-					return false;
-				}
-			}
-		}
-
 	}
 
 
@@ -116,23 +68,9 @@ class App {
 	}
 
 	//
-	public static function requestPath($index, $default = null)
-	{
-		return isset(self::$request[$index]) ? self::$request[$index] : $default;
-	}
-
-	//
-	public static function setRequestPathMax($max)
-	{
-		if (isset(self::$request[$max])) {
-			self::to404();
-		}
-	}
-
-	//
 	public static function page($default = 'index')
 	{
-		$page = self::requestPath(0, $default);
+		$page = \Squelette\Request::path(0, $default);
 		return $page === '' ? $default : $page;
 	}
 
@@ -157,7 +95,7 @@ class App {
 			extract($_props);
 		}
 
-		include "modules/" . $_module_name . '.php';
+		return include "modules/" . $_module_name . '.php';
 	}
 
 	//
