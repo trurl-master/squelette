@@ -2,31 +2,36 @@
 
 namespace Squelette;
 
-Class Request {
+Class Request
+{
 
-	private static $request = [];
-	private static $query = [];
+    private static $request = [];
+    private static $lang;
 
     public static function init()
     {
-		// parse url
-		$decoded_uri = rawurldecode($_SERVER['REQUEST_URI']);
-		$request = explode('?', $decoded_uri);
-		$requestPath = explode('/', trim($request[0], '/'));
-		self::$request = $requestPath; // request vars
+        // parse url
+        $request = explode('?', rawurldecode($_SERVER['REQUEST_URI']));
+        self::$request = explode('/', trim($request[0], '/'));
 
-		// if (isset($request[1])) {
-		// 	parse_str($request[1], self::$query);
-		// }
+        if (\App::cfg('language_in_path')) {
+            self::$lang = array_shift(self::$request);
+        }
     }
 
-	//
-	public static function setPathMax($max)
-	{
-		if (isset(self::$request[$max])) {
-			\App::to404();
-		}
-	}
+    //
+    public static function getLang()
+    {
+        return self::$lang;
+    }
+
+    //
+    public static function setPathMax($max)
+    {
+        if (isset(self::$request[$max])) {
+            \App::to404();
+        }
+    }
 
     public static function get($key, $default = null)
     {
@@ -58,60 +63,60 @@ Class Request {
         return self::filterParam(self::get($key, null), $filter, $o);
     }
 
-	//
-	private static function filterParam($param, $filter, $o)
-	{
-		// not defined
-		if ($param === null) {
+    //
+    private static function filterParam($param, $filter, $o)
+    {
+        // not defined
+        if ($param === null) {
 
-			// if parameter is optional - return
-			if (isset($o['optional']) && $o['optional'] === true) {
-				return true;
-			}
+            // if parameter is optional - return
+            if (isset($o['optional']) && $o['optional'] === true) {
+                return true;
+            }
 
-			//
-			if (isset($o['if_empty_404']) && $o['if_empty_404'] === true) {
-				\App::to404();
-			}
+            //
+            if (isset($o['if_empty_404']) && $o['if_empty_404'] === true) {
+                \App::to404();
+            }
 
-			//
-			return false;
-		}
+            //
+            return false;
+        }
 
-		// param matches filter or filter is not set
-		if ($filter === false || preg_match($filter, $param)) {
+        // param matches filter or filter is not set
+        if ($filter === false || preg_match($filter, $param)) {
 
-			//
-			if (isset($o['value_set'])) {
+            //
+            if (isset($o['value_set'])) {
 
-				if (in_array($param, $o['value_set'])) {
-					return true;
-				}
+                if (in_array($param, $o['value_set'])) {
+                    return true;
+                }
 
-				if (isset($o['if_not_in_set_404']) && $o['if_not_in_set_404'] === true) {
-					\App::to404();
-				}
+                if (isset($o['if_not_in_set_404']) && $o['if_not_in_set_404'] === true) {
+                    \App::to404();
+                }
 
-				return false;
-			}
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		// param doesn't match filter
-		if (isset($o['if_fail_404']) && $o['if_fail_404'] === true) {
-			\App::to404();
-		} else {
+        // param doesn't match filter
+        if (isset($o['if_fail_404']) && $o['if_fail_404'] === true) {
+            \App::to404();
+        } else {
 
-			if (isset($o['if_fail'])) {
-				self::$request[$index] = $o['if_fail'];
-			} else {
-				self::$request[$index] = false;
-			}
+            if (isset($o['if_fail'])) {
+                self::$request[$index] = $o['if_fail'];
+            } else {
+                self::$request[$index] = false;
+            }
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
 
 

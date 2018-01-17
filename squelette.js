@@ -50,7 +50,6 @@ function endDb() {
 }
 
 function propel(what) {
-	// log('command', 'propel ' + what);
 	cli(propel_path + ' ' + what, {
 		cwd: 'inc/db'
 	});
@@ -132,7 +131,7 @@ function init(/*namespace, */options) {
 	cli('composer dump-autoload -o');
 
 	//
-	log('message', 'please edit inc/db/data/main.sqlite to fill out meta data entries');
+	log('message', 'please edit data/main.sqlite to fill out meta data entries');
 
 }
 

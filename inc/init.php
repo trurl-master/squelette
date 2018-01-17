@@ -6,14 +6,9 @@ session_start();
 // App config
 $config = require 'config.php';
 
-if (
-	!$config['is_production'] ||
-	isset($_GET['DEBUG']) ||
-	(isset($_SESSION['DEBUG']) && $_SESSION['DEBUG'])
-) {
+if (!$config['is_production']) {
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
-    $_SESSION['DEBUG'] = true;
 }
 
 // Autoload

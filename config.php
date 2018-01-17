@@ -7,5 +7,6 @@ return [
     'root' => getcwd(),
     'webpack' => [
     	// 'variants' => ['main']
-    ]
+    ],
+    'locales' => ['en' => 'en_US']
 ];

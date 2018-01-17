@@ -1,13 +1,14 @@
 const path = require('path');
-const debug = false;
-const env = debug ? 'dev' : 'production';
-const NODE_ENV = JSON.stringify(env);
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const fs = require('fs');
-// process.traceDeprecation = true
 var WebpackBuildNotifierPlugin = require('webpack-build-notifier');
+
+
+//
+const NODE_ENV = process.env.NODE_ENV;
+const debug = NODE_ENV !== 'production';
 
 
 //
@@ -20,13 +21,13 @@ const loadersConfig = {
 	babel: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['es2015', 'stage-2']
+			presets: ['env', 'stage-2']
 		}
 	},
 	babel_react: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['es2015', 'stage-2', 'react']
+			presets: ['env', 'stage-2', 'react']
 		}
 	},
 	css: {
@@ -73,7 +74,10 @@ const common_config = {
 	resolve: {
 		alias: {
 			'[modules]': path.join(__dirname, 'js/modules'),
-			'[components]': path.join(__dirname, 'js/components')
+			'[common]':  path.join(__dirname, 'js/modules/common'),
+			'[components]': path.join(__dirname, 'js/components'),
+			'[models]': path.join(__dirname, 'js/models'),
+			'[libs]': path.join(__dirname, 'js/libs')
 		}
 	},
 }
@@ -85,7 +89,6 @@ module.exports = [
 		name: 'www',
 		entry: {
 			 main: './js/app.js'
-			// ,questions: './js/app.1.js'
 		},
 		output: {
 			path: path.join(__dirname, "assets/bundles/"),
@@ -93,7 +96,6 @@ module.exports = [
 		},
 		module: {
 			rules: [
-				// { test: /\.png$/, loader: "file-loader?name=[path][name].[ext]" },
 				{
 					test: /\.jsx?$/,
 					exclude: /(node_modules|bower_components)/,
@@ -117,7 +119,7 @@ module.exports = [
 		plugins: debug ?
 			[
 				new CleanWebpackPlugin(['bundles/*.*'], {
-					root: path.join(__dirname, "../www/assets/"),
+					root: path.join(__dirname, "assets/"),
 					verbose: true,
 					dry: false,
 					exclude: ['.htaccess']
@@ -143,7 +145,7 @@ module.exports = [
 				})
 			] : [
 				new CleanWebpackPlugin(['bundles/*.*'], {
-					root: path.join(__dirname, "../www/assets/"),
+					root: path.join(__dirname, "assets/"),
 					verbose: true,
 					dry: false,
 					exclude: ['.htaccess']
@@ -169,7 +171,7 @@ module.exports = [
 						keep_fnames: true
 					},
 					compress: {
-					screw_ie8: true
+						screw_ie8: true
 					},
 					comments: false
 				}),
@@ -183,10 +185,7 @@ module.exports = [
 						);
 
 					});
-				},
-				new WebpackBuildNotifierPlugin({
-				  title: "Build"
-				})
+				}
 			]
 	})
 ]
