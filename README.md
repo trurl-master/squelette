@@ -13,3 +13,5 @@ Node, npm and composer are required
 ## Usage
 
 To update model: `npm run squelette refresh db-model`
+To build assets in dev mode: `webpack`
+To build assets in production mode: `NODE_ENV=production webpack`
