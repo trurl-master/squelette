@@ -32,11 +32,12 @@
     "commander": "^2.11.0"
   },
   "bin": {
-    "squelette": "./squelette.js"
+    "squelette": "./squelette/squelette.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "squelette": "./squelette.js"
+    "squelette": "./squelette/squelette.js",
+    "build": "NODE_ENV=production webpack --config webpack.config.js -p"
   },
   "author": "Ivan Galiatin",
   "license": "ISC"

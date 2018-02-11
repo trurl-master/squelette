@@ -1,0 +1,11 @@
+js
+css
+.gitignore
+.git
+webpack.config.js
+test.json
+node_modules
+rsync_exclude.txt
+README.md
+package.json
+package-lock.json

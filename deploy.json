@@ -1,0 +1,15 @@
+{
+    "remote": {
+        "username": "russianb",
+        "server": "",
+        "path": "",
+        "latest_version": 8,
+        "root_htaccess": {
+            "filename": "deploy.htaccess",
+            "site": "example.com"
+        },
+        "root_app": {
+            "filename": "deploy.app.php"
+        }
+    }
+}

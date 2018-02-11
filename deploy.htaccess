@@ -1,0 +1,25 @@
+Options -Indexes
+
+<IfModule mod_dir.c>
+	DirectoryIndex app.php
+</IfModule>
+
+RewriteEngine On
+
+# for those without accept-language or without supported languages redirect to default language
+# RewriteCond %{REQUEST_URI} !/assets/ [NC]
+# RewriteCond %{REQUEST_URI} !/(ru|en)/ [NC]
+# RewriteCond %{REQUEST_FILENAME} !app\.php [NC]
+# RewriteCond %{REQUEST_FILENAME} !robots\.txt [NC]
+# RewriteRule ^(.*) /ru/$1 [R=307,L,NC,QSA]
+
+# assets
+RewriteCond %{HTTP_HOST} ^{{{site}}}$
+RewriteCond %{REQUEST_URI} /assets/ [NC]
+RewriteCond %{DOCUMENT_ROOT}/apps/{{{version}}}/$1 -f
+RewriteRule ^(.*)$ apps/{{{version}}}/$1 [L,NC,QSA]
+
+# non assets
+RewriteCond %{HTTP_HOST} ^{{{site}}}$
+RewriteCond %{REQUEST_URI} !/assets/ [NC]
+RewriteRule ^.* app.php [L,NC,QSA]
