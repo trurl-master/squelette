@@ -71,11 +71,11 @@ class Image {
                 break;
             case 'gif': $result = imagegif($dst_img, $filename);
                 break;
-            default: throw new Exception('unsupported image format: ' . $ext);
+            default: throw new \Exception('unsupported image format: ' . $ext);
         }
 
         if (!$result) {
-            throw new Exception('unable to save resized image: ' . $filename);
+            throw new \Exception('unable to save resized image: ' . $filename);
             // die('{"success": false, "message": "unable to save resized image: ' . $filename . '"}');
         }
 

@@ -8,5 +8,6 @@ return [
     'webpack' => [
     	// 'variants' => ['main']
     ],
+    'language_in_path' => false,
     'locales' => ['en' => 'en_US']
 ];

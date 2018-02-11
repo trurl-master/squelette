@@ -15,21 +15,40 @@ trait ArticleContent
 		}
 
 		$path = $this->resRootPath();
+		$copies_filenames = [];
 
 		$uploadHandler = new UploadHandler($path);
 
 		$uploadHandler->addRule('extension', ['allowed' => ['jpg', 'jpeg', 'png']], 'Изображение должно иметь формат jpg, jpeg или png');
 		$uploadHandler->addRule('size', ['size' => '20M'], 'Изображение должно быть меньше {size}');
 
-		$uploadHandler->setSanitizerCallback(function($name) use ($o){
+		$uploadHandler->setSanitizerCallback(function($name) use ($o, &$copies_filenames){
 
 			$ext = pathinfo($name, PATHINFO_EXTENSION);
 
 			if (isset($o['filename']) && is_string($o['filename'])) {
+
+				if (isset($o['copy'])) {
+					foreach ($o['copy'] as $copy) {
+						$copies_filenames[] = $copy['as'] . '.' . $ext;
+					}
+				}
+
 				return $o['filename'] . '.' . $ext;
 			} else {
-				return uniqid() . '_' . preg_replace('/[^a-z0-9\.\-\_]+/', '-', strtolower($name));
+
+				$uniqid = uniqid();
+				$filename = preg_replace('/[^a-z0-9\.\-\_]+/', '-', strtolower($name));
+
+				if (isset($o['copy'])) {
+					foreach ($o['copy'] as $copy) {
+						$copies_filenames[] = $uniqid . '_' . $copy['as'] . '_' . $filename;
+					}
+				}
+
+				return $uniqid . '_' . $filename;
 			}
+
 		});
 
 
@@ -62,6 +81,23 @@ trait ArticleContent
 
 		// $new_w = $width;
 		// $new_h = 0;
+
+
+		if (isset($o['copy'])) {
+
+			$i = 0;
+			foreach ($o['copy'] as $copy) {
+				Image::resize(
+					$path . $result->name,
+					$this->resPath() . $copies_filenames[$i],
+					$copy['width'],
+					$copy['height'],
+					$copy['by']
+				);
+
+				$i++;
+			}
+		}
 
 		if (isset($o['resize']) && $o['resize']) {
 			Image::resize(
