@@ -117,6 +117,8 @@ class App
             extract($_props);
         }
 
+        $l = \Squelette\Db::get('modules/' . $_module_name);
+
         return include "modules/" . $_module_name . '.php';
     }
 

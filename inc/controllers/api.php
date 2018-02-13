@@ -2,7 +2,7 @@
 
 use \Squelette\UserAuth;
 
-$section = App::requestPath(1);
+$section = \Squelette\Request::path(1);
 
 switch ($section) {
 	// case '':

@@ -3,7 +3,7 @@
         "username": "russianb",
         "server": "",
         "path": "",
-        "latest_version": 8,
+        "latest_version": false,
         "root_htaccess": {
             "filename": "deploy.htaccess",
             "site": "example.com"
