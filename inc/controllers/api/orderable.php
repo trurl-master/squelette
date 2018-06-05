@@ -19,20 +19,20 @@ if (!$validator->validate($_POST)) {
 
 $ord = $_POST['ord'];
 $table = $_POST['table'];
-$class = '\\Squelette\\' . ucwords($table, '_') . 'Query';
+$class = '\\Yournamespace\\' . ucwords($table, '_') . 'Query';
 
 //
 switch ($_POST['task']) {
 
 	case 'set-order':
 
-		if ($class::create()->setOrder($ord)) {
+		if ($class::create()->reorder($ord)) {
 			Respond::success();
 		} else {
 			Respond::fail();
 		}
 
 		break;
-	
+
 	default: App::to404();
 }

@@ -1,5 +1,7 @@
 /node_modules
 /propel.log
 
-# composer vendor dir
+# composer
 /vendor
+/composer.phar
+/composer.lock

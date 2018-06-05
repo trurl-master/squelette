@@ -8,13 +8,16 @@ if (!UserAuth::isSignedin() || !UserAuth::getUser()->isAdmin()) {
 	App::to404();
 }
 
-//
 $validator = new Validator();
-$validator->add('table', 'inlist', ['list' => ['news', 'partners']]);
+$validator->add('table', 'inlist', ['list' => ['news']]);
 $validator->add('id', 'required | integer');
 
+/**
 
-//
+Sample logic
+
+*/
+
 switch ($_POST['task']) {
 
 	case 'upload-title-pic':
@@ -22,47 +25,42 @@ switch ($_POST['task']) {
 		//
 		if (!$validator->validate($_POST)) {
 			print_r($validator->getMessages());
-			die('{"success":false}');
+			Respond::fail();
 		}
 
 		switch ($_POST['table']) {
 			case 'news':
 
-				// $article = \Squelette\NewsQuery::create()->findPK($_POST['id']);
+				$article = \Yournamespace\NewsQuery::create()->findPK($_POST['id']);
 
 				if (!$article) {
-					die('{"success":false,"message":"Новость не найдена"}');
+					Respond::fail(['message' => 'News not found']);
 				}
 
+				$resize = [
+					'width' => 400,
+					'height' => 400,
+					'by' => \Squelette\Image::RESIZE_COVER
+				];
+
 				break;
-			default: die('{"success":false}');
+			default: Respond::fail();
 		}
 
 		//
 		try {
 			$article->uploadPic([
 				'filename' => 'title',
-				'resize' => [
-					'width' => 300,
-					'height' => 300,
-					'by' => \Squelette\Image::RESIZE_COVER
-				]
+				'resize' => $resize
 			]);
 		} catch (Exception $e) {
-			die(json_encode([
-				'success' => false,
-				'message' => $e->getMessage()
-			]));
+			Respond::fail(['message' => $e->getMessage()]);
 		}
 
 		$article->updateRes();
 
 		//
 		Respond::success(['resid' => $article->getResid()]);
-		// echo json_encode([
-		// 	'success' => true,
-		// 	'resid' => $news->getResid()
-		// ]);
 
 		break;
 
@@ -72,16 +70,14 @@ switch ($_POST['task']) {
 		//
 		if (!$validator->validate($_POST)) {
 			print_r($validator->getMessages());
-			die('{"success":false}');
+			Respond::fail();
 		}
 
 		switch ($_POST['table']) {
 			case 'news':
 
-				// $news = \Squelette\NewsQuery::create()->findPK($_POST['id']);
-
 				if (!$news) {
-					die('{"success":false,"message":"Новость не найдена"}');
+					Respond::fail(['message' => 'News record not found']);
 				}
 
 				$fn = $news->uploadPic([
@@ -103,35 +99,6 @@ switch ($_POST['task']) {
 
 		break;
 
-	case 'update-resource':
-
-		//
-		if (!$validator->validate($_POST)) {
-			print_r($validator->getMessages());
-			die('{"success":false}');
-		}
-
-		switch ($_POST['table']) {
-			case 'news':
-
-				// $news = \Squelette\NewsQuery::create()->findPK($_POST['id']);
-
-				if (!$news) {
-					die('{"success":false,"message":"Новость не найдена"}');
-				}
-
-				$news->updateRes();
-
-				echo json_encode([
-					'success' => true,
-					'resid' => $news->getResid()
-				]);
-
-				break;
-		}
-
-		break;
-
 	case 'remove-pics':
 
 		$validator->add('filenames[*]', 'regex(/[a-z0-9\.\-\_]+/)');
@@ -139,19 +106,21 @@ switch ($_POST['task']) {
 		//
 		if (!$validator->validate($_POST)) {
 			print_r($validator->getMessages());
-			die('{"success":false}');
+			Respond::fail();
 		}
 
 		switch ($_POST['table']) {
 			case 'news':
 
-				// $news = \Squelette\NewsQuery::create()->findPK($_POST['id']);
+				$news = \Yournamespace\NewsQuery::create()->findPK($_POST['id']);
 
 				if (!$news) {
-					die('{"success":false,"message":"Новость не найдена"}');
+					Respond::fail(['message' => 'News record not found']);
 				}
 
 				$news->removePics($_POST['filenames']);
+
+				Respond::success();
 
 				break;
 		}

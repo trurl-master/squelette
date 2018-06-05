@@ -2,14 +2,6 @@
 
 namespace Squelette;
 
-// define('RESIZE_BY_HEIGHT', 1);
-// define('RESIZE_BY_WIDTH', 2);
-// define('RESIZE_BY_MAJOR', 3);
-// define('RESIZE_BY_WIDTH_HEIGHT', 4);
-// define('RESIZE_COVER', 4);
-// define('RESIZE_CONTAIN', 5);
-
-
 class Image {
 
     const
@@ -38,11 +30,9 @@ class Image {
             $img = call_user_func($fn_name, $name);
             if (!$img) {
                 throw new Exception('error creating thumb');
-                // die('{"success": false, "message": "error creating thumb"}');
             }
         } else {
             throw new Exception('unsupported image format: ' . $ext);
-            // die('{"success": false, "message": "unsupported image format: ' . $ext . '"');
         }
 
         return array($img, $ext);
@@ -76,7 +66,6 @@ class Image {
 
         if (!$result) {
             throw new \Exception('unable to save resized image: ' . $filename);
-            // die('{"success": false, "message": "unable to save resized image: ' . $filename . '"}');
         }
 
         return $result;
@@ -156,8 +145,6 @@ class Image {
             if ($ext === 'png' || $ext === 'gif') {
                 imagealphablending( $dst_img, false );
                 imagesavealpha( $dst_img, true );
-                // $black = imagecolorallocate($dst_img, 0, 0, 0);
-                // imagecolortransparent($dst_img, $black);
             }
 
             imagecopyresampled($dst_img, $src_img, 0, 0, $src_x, $src_y, $thumb_w, $thumb_h, $width, $height);

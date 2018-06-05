@@ -1,8 +1,9 @@
 <?php
 
 use \Squelette\UserAuth;
+use \Squelette\Request;
 
-$section = \Squelette\Request::path(1);
+$section = Request::path(1);
 
 switch ($section) {
 	// case '':

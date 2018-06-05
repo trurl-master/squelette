@@ -26,7 +26,7 @@
 		<script src="/assets/modernizr-custom.js"></script>
 	</head><body><?php
 
-		App::module('pages/' . $page, ['page' => $page]);
+		App::module('pages/' . $_props['page'], $_props);
 		App::jsBundle();
 
 	?></body>

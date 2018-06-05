@@ -20,9 +20,10 @@ class Meta extends BaseMeta
 
 	public function getCustom()
 	{
+		$custom = parent::getCustom();
 
 		if ($this->customParsed === null) {
-			$this->customParsed = $this->custom === '' || $this->custom === NULL ? [] : json_decode($this->custom, true);
+			$this->customParsed = $custom === '' || $custom === NULL ? [] : json_decode($custom, true);
 		}
 
 		return $this->customParsed;

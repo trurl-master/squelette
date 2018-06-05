@@ -6,7 +6,7 @@
 		<column name="type" type="varchar" size="64" required="true" />
 		<column name="label" type="varchar" size="64" />
 		<column name="note" type="varchar" size="64" />
-		<column name="group" type="varchar" size="32" />
+		<column name="grp" type="varchar" size="32" />
 		<column name="params" type="varchar" size="1024" />
 	</table>
 

@@ -9,7 +9,7 @@
     "require": {
         "propel/propel": "~2.0@dev",
         "monolog/monolog": "^1.23",
-        "athens/propel-js": "0.*",
+        "athens/propel-js": "^1.0",
         "siriusphp/upload": "^2.1",
         "phpmailer/phpmailer": "~6.0"
     },

@@ -7,7 +7,9 @@ module.exports = function (what) {
     // refresh propel
     switch (what) {
         case 'db-model':
-            propel('model:build');
+            if (!propel('model:build')) {
+                return;
+            }
             cli('composer dump-autoload -o');
             break;
         case 'db-config':

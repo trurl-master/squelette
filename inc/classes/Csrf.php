@@ -6,27 +6,6 @@ namespace Squelette;
 class Csrf
 {
 
-	// function my_simple_crypt( $string, $action = 'e' )
-	// {
-	// 	// you may change these values to your own
-	// 	$secret_key = 'my_simple_secret_key';
-	// 	$secret_iv = 'my_simple_secret_iv';
-
-	// 	$output = false;
-	// 	$encrypt_method = "AES-256-CBC";
-	// 	$key = hash( 'sha256', $secret_key );
-	// 	$iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
-
-	// 	if( $action == 'e' ) {
-	// 	    $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
-	// 	}
-	// 	else if( $action == 'd' ){
-	// 	    $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
-	// 	}
-
-	// 	return $output;
-	// }
-
 	private static function getNames()
 	{
 		if (!isset($_SESSION['csrf-name-name'])) {
@@ -57,11 +36,6 @@ class Csrf
 
 		$array = self::getTokenArray($name);
 
-		// print_r($name);
-		// print_r($_REQUEST);
-		// print_r($_SESSION);
-		// die();
-
 		if (!isset($_REQUEST[$array['name']['name']]) ||
 			!isset($_REQUEST[$array['token']['name']]) ||
 			!isset($_SESSION['csrf'])) {
@@ -69,9 +43,6 @@ class Csrf
 		}
 
 		$name = base64_decode($_REQUEST[$array['name']['name']]);
-
-		// var_dump($name, $_SESSION['csrf'][$name]['token'], $_REQUEST[$array['token']['name']]);
-		// die();
 
 		return $_REQUEST[$array['token']['name']] === $_SESSION['csrf'][$name]['token'];
 	}

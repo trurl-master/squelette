@@ -8,7 +8,7 @@ return [
     'language_in_path' => false,
     'default_language' => 'en',
     'locales' => ['en' => 'en_US'],
-    'default_timezone' => 'America/Los_Angeles',
+    'default_timezone' => 'Europe/Moscow',
     'auth' => false,
     'smtp' => false,
     //   [
@@ -21,10 +21,15 @@ return [
     //    ]
     //],
     'emails' => [
-        'some_email' => 'some_email@your.domain',
+        'request' => 'trurl-master@ya.ru',
+        'question' => 'trurl-master@ya.ru',
         'noreply' => [
-            'address' => 'noreply@your.domain',
-            'title' => 'Title'
+            'address' => 'noreply@macs.school',
+            'title' => 'M-A-C-S'
+        ],
+        'info' => [
+            'address' => 'info@macs.school',
+            'title' => 'M-A-C-S'
         ]
     ]
 ];

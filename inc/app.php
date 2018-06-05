@@ -23,6 +23,17 @@ class App
         self::$config = $config;
 
         //
+        if (self::cfg('default_timezone', false)) {
+            date_default_timezone_set(self::cfg('default_timezone'));
+        }
+
+
+        //
+        if (self::cfg('auth', false)) {
+            \Squelette\UserAuth::init();
+        }
+
+        //
         Request::init();
 
         //
@@ -40,29 +51,13 @@ class App
 			self::$locale = $locales[self::$lang];
 		}
 
-		//
-        if (isset($config['webpack']) && isset($config['webpack']['variants'])) {
-
-            self::$webpack = ['' => require "webpack.php"];
-
-            foreach ($config['webpack']['variants'] as $variant) {
-                self::$webpack[$variant] = require $variant . ".webpack.php";
-            }
-
-        } else {
-            self::$webpack = require "webpack.php"; // webpack hash value
-        }
+        self::$webpack = require 'webpack.php'; // webpack hash value
 
     }
 
 
     public static function cfg($key, $default = NULL) {
         return isset(self::$config[$key]) ? self::$config[$key] : $default;
-    }
-
-
-    public static function webpack($variant = '') {
-        return isset(self::$webpack[$variant]) ? self::$webpack[$variant] : self::$webpack;
     }
 
 
@@ -119,7 +114,7 @@ class App
 
         $l = \Squelette\Db::get('modules/' . $_module_name);
 
-        return include "modules/" . $_module_name . '.php';
+        return include 'modules/' . $_module_name . '.php';
     }
 
     //
@@ -158,7 +153,7 @@ class App
 
     public static function to404()
     {
-        header($_SERVER['SERVER_PROTOCOL'] . " 404 Not Found");
+        header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
 
         if (file_exists('inc/controllers/404.php')) {
             App::controller('404');
@@ -180,15 +175,6 @@ class App
         die();
     }
 
-    //
-    public static function sendEmail($from, $to, $subject = '(No subject)', $message = '', $type = 'plain')
-    {
-        // $header = "MIME-Version: 1.0\r\nContent-type: text/".$type."; charset=UTF-8\r\nFrom: $from\r\n";
-        // return mail($to, '=?UTF-8?B?'.base64_encode($subject).'?=', str_replace('<br>', "\n\n", subject)$message, $header);
-        return \Squelette\Email::send($to, $subject, $message);
-    }
-
-
     public static function renderTemplate($_template_name, $_props = null)
     {
         if ($_props) {
@@ -209,7 +195,7 @@ class App
     {
         $variant_str = $variant ? $variant : 'main';
 
-        echo '<link href="/assets/bundles/bundle.', $variant_str, '.' , self::webpack($variant)['hash'] , '.css" rel="stylesheet">';
+        echo '<link href="/assets/bundles/bundle.', $variant_str, '.' , self::$webpack['hash'] , '.css" rel="stylesheet">';
     }
 
 
@@ -221,6 +207,7 @@ class App
         ?><script>
             app = {
                  lang: '<?=self::lang()?>'
+                ,locale: '<?=self::locale()?>'
                 ,live_site: '<?=self::cfg('live_site')?>'
                 ,assets: '<?=self::cfg('assets')?>'
                 ,active_modules: ['<?=implode('\',\'', array_unique(self::$modules))?>']
@@ -233,7 +220,7 @@ class App
                 ?>
             }
         </script>
-        <script src="/assets/bundles/bundle.<?=$variant_str?>.<?=self::webpack($variant)['hash']?>.js" async></script><?php
+        <script src="/assets/bundles/bundle.<?= $variant_str ?>.<?= self::$webpack['hash'] ?>.js" async></script><?php
     }
 
 }

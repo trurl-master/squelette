@@ -11,7 +11,7 @@ trait ArticleContent
 	{
 
 		if ($this->resPath() === false) {
-			throw new \Exception('Ошибка загрузки файла: ресурса не существует');
+			throw new \Exception('File upload error: resource not found');
 		}
 
 		$path = $this->resRootPath();
@@ -19,8 +19,8 @@ trait ArticleContent
 
 		$uploadHandler = new UploadHandler($path);
 
-		$uploadHandler->addRule('extension', ['allowed' => ['jpg', 'jpeg', 'png']], 'Изображение должно иметь формат jpg, jpeg или png');
-		$uploadHandler->addRule('size', ['size' => '20M'], 'Изображение должно быть меньше {size}');
+		$uploadHandler->addRule('extension', ['allowed' => ['jpg', 'jpeg', 'png']], 'Allowed image formats are jpg, jpeg and png');
+		$uploadHandler->addRule('size', ['size' => '20M'], 'Maximum size is {size}');
 
 		$uploadHandler->setSanitizerCallback(function($name) use ($o, &$copies_filenames){
 
@@ -53,7 +53,7 @@ trait ArticleContent
 
 
 		//
-		$result = $uploadHandler->process($_FILES); // ex: subdirectory/my_headshot.png
+		$result = $uploadHandler->process($_FILES);
 
 		if (!$result->isValid()) {
 			$messages = $result->getMessages();
@@ -62,8 +62,6 @@ trait ArticleContent
 				$messages_list[] = $msg->getTemplate();
 			}
 			throw new \Exception('Изображение некорректно: ' . implode("\n", $messages_list));
-			// return false;
-			// die('not valid');
 		}
 
 		//
@@ -78,10 +76,6 @@ trait ArticleContent
 			throw $e;
 
 		}
-
-		// $new_w = $width;
-		// $new_h = 0;
-
 
 		if (isset($o['copy'])) {
 
@@ -118,7 +112,7 @@ trait ArticleContent
 
 	public function removePics(array $filenames)
 	{
-		// $gallery_dir = $cfg_docs_path . $path;
+
 		$path = $this->resPath();
 
 		foreach ($filenames as $filename) {

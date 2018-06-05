@@ -20,9 +20,9 @@ class ConfigQuery extends BaseConfigQuery
 	{
 
 		if ($subset === null) {
-			$data = \Top50\ConfigQuery::create()->find();
+			$data = \Squelette\ConfigQuery::create()->find();
 		} else {
-			$data = \Top50\ConfigQuery::create()->filterByKey($subset)->find();
+			$data = \Squelette\ConfigQuery::create()->filterByKey($subset)->find();
 		}
 
 		// $data->toArray(null, false, \Propel\Runtime\Map\TableMap::TYPE_FIELDNAME);
@@ -57,7 +57,7 @@ class ConfigQuery extends BaseConfigQuery
 
 	public static function getConfigValue($key)
 	{
-		$item = \Top50\ConfigQuery::create()->filterByKey($key)->findOne();
+		$item = \Squelette\ConfigQuery::create()->filterByKey($key)->findOne();
 
 		return $item->getValue();
 	}

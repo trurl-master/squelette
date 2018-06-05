@@ -11,7 +11,8 @@ function cli(command, options, silent, return_result) {
 	    var result = execSync(command, options);
 	} catch (error) {
 		log('error', error.message);
-		return;
+		throw error;
+		return false;
 	}
 
 	if (return_result) {

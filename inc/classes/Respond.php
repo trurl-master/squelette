@@ -6,14 +6,13 @@ namespace Squelette;
 class Respond
 {
 
-	// public static $respond_method = 'JSON';
-
 	public static function success($o = [])
 	{
 		if (isset($o['success'])) {
 			unset($o['success']);
 		}
 
+		header('Content-Type: application/json');
 		die(json_encode(array_merge(['success' => true], $o)));
 	}
 
@@ -23,6 +22,7 @@ class Respond
 			unset($o['success']);
 		}
 
+		header('Content-Type: application/json');
 		die(json_encode(array_merge(['success' => false], $o)));
 	}
 

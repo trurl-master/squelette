@@ -18,11 +18,19 @@ class Meta extends BaseMeta
 {
 	protected $customParsed = null;
 
+	public function setCustom($custom)
+	{
+		parent::setCustom(is_array($custom) ? json_encode($custom) : $custom);
+
+		$this->customParsed = null;
+	}
+
 	public function getCustom()
 	{
+		$custom = parent::getCustom();
 
 		if ($this->customParsed === null) {
-			$this->customParsed = $this->custom === '' || $this->custom === NULL ? [] : json_decode($this->custom, true);
+			$this->customParsed = $custom === '' || $custom === NULL ? [] : json_decode($custom, true);
 		}
 
 		return $this->customParsed;

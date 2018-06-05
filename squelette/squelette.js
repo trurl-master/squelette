@@ -38,10 +38,10 @@ program
 	})
 
 program
-	.command('deploy [state]')
+	.command('deploy [state] [dconf]')
 	.description('deploy project')
 	.action(require('./commands/deploy'))
 
 program
-	.version('0.1.0')
+	.version('0.1.1')
 	.parse(process.argv);

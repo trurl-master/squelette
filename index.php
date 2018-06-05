@@ -3,17 +3,9 @@
 require_once 'inc/init.php';
 require_once 'inc/app.php';
 
-//
-date_default_timezone_set('Europe/Moscow');
-
-//
 App::init($config);
 
-//
-$page = App::page();
-
-//
-switch ($page) {
+switch ($page = App::page()) {
 
 	case 'api': App::controller('api');	break;
 

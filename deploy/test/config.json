@@ -1,12 +1,12 @@
 {
     "remote": {
-        "username": "russianb",
-        "server": "",
-        "path": "",
+        "username": "ssh-username",
+        "server": "server.address.tld",
+        "path": "/path/to/project/on/server/",
         "latest_version": false,
         "root_htaccess": {
             "filename": "deploy.htaccess",
-            "site": "example.com"
+            "site": "domain.tld"
         },
         "root_app": {
             "filename": "deploy.app.php"

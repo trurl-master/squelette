@@ -1,10 +1,11 @@
 const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const fs = require('fs');
-var WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 
+//
+const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 
 //
 const NODE_ENV = process.env.NODE_ENV;
@@ -12,24 +13,20 @@ const debug = NODE_ENV !== 'production';
 
 
 //
-const extract = {
-	www: new ExtractTextPlugin("../bundles/bundle.[name].[hash].css")
-}
-
-//
 const loadersConfig = {
 	babel: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['env', 'stage-2']
+			presets: ['env'/*, 'stage-2'*/]
 		}
 	},
 	babel_react: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['env', 'stage-2', 'react']
+			presets: ['env'/*, 'stage-2'*/, 'react']
 		}
 	},
+    extract: MiniCssExtractPlugin.loader,
 	css: {
 		loader: 'css-loader',
 		options: {
@@ -60,132 +57,93 @@ const loadersConfig = {
 
 
 //
-function extractLoaders(config, loaders) {
-	return extract[config].extract({
-		use: loaders.map((loader) => loadersConfig[loader])
-	})
-}
-
-
-
-const common_config = {
-	context: __dirname,
-	devtool: debug ? "inline-sourcemap" : false,
-	resolve: {
-		alias: {
-			'[modules]': path.join(__dirname, 'js/modules'),
-			'[common]':  path.join(__dirname, 'js/modules/common'),
-			'[components]': path.join(__dirname, 'js/components'),
-			'[models]': path.join(__dirname, 'js/models'),
-			'[libs]': path.join(__dirname, 'js/libs')
-		}
-	},
+function extractLoaders(loaders) {
+    return loaders.map((loader) => loadersConfig[loader]);
 }
 
 
 //
-module.exports = [
-	Object.assign({}, common_config, {
-		name: 'www',
-		entry: {
-			 main: './js/app.js'
-		},
-		output: {
-			path: path.join(__dirname, "assets/bundles/"),
-			filename: 'bundle.[name].[hash].js'
-		},
-		module: {
-			rules: [
-				{
-					test: /\.jsx?$/,
-					exclude: /(node_modules|bower_components)/,
-					use: loadersConfig.babel
-				},
-				{
-					test: /\.css$/,
-					use: extractLoaders('www', ['css', 'postcss'])
-				},
-				{
-					test: /\.less$/,
-					use: extractLoaders('www', ['css', 'postcss', 'less'])
-				},
-				{
-					test: /\.scss$/,
-					use: extractLoaders('www', ['css', 'postcss', 'sass'])
-				}
-			]
-		},
+module.exports = {
+    context: __dirname,
+	resolve: {
+		alias: {
+			'[modules]': path.resolve(__dirname, 'js/modules/'),
+			'[common]':  path.resolve(__dirname, 'js/modules/common/'),
+			'[components]': path.resolve(__dirname, 'js/components/'),
+			'[models]': path.resolve(__dirname, 'js/models/'),
+            '[libs]': path.resolve(__dirname, 'js/libs/'),
+            '[db]': path.resolve(__dirname, 'inc/db/generated-js/')
+		}
+	},
+    entry: {
+        main: './js/app.js',
+        // admin: './js/app.admin.js'
+    },
+    output: {
+        path: path.resolve(__dirname, "assets/bundles/"),
+        filename: 'bundle.[name].[hash].js'
+    },
+    module: {
+        rules: [
+            // {
+            //     test: /\.jsx?$/,
+            //     exclude: /(node_modules|bower_components)/,
+            //     use: loadersConfig.babel
+            // },
+            {
+                test: /\.jsx$/,
+                exclude: /(node_modules|bower_components)/,
+                use: loadersConfig.babel_react
+            },
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: loadersConfig.babel
+            },
+            {
+                test: /\.css$/,
+                use: extractLoaders(['extract', 'css', 'postcss'])
+            },
+            {
+                test: /\.less$/,
+                use: extractLoaders(['extract', 'css', 'postcss', 'less'])
+            },
+            {
+                test: /\.scss$/,
+                use: extractLoaders(['extract', 'css', 'postcss', 'sass'])
+            }
+        ]
+    },
+    plugins: [
+        new CleanWebpackPlugin(['bundles/*.*'], {
+            root: path.resolve(__dirname, 'assets/'),
+            verbose: true,
+            dry: false,
+            exclude: ['.htaccess']
+        }),
+        new MiniCssExtractPlugin({
+            filename: '../bundles/bundle.[name].[hash].css',
+            chunkFilename: '../bundles/[id].css'
+            // filename: "[name].css",
+            // chunkFilename: "[id].css"
+        }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
+        function() {
+            this.plugin("done", function(stats) {
 
-		plugins: debug ?
-			[
-				new CleanWebpackPlugin(['bundles/*.*'], {
-					root: path.join(__dirname, "assets/"),
-					verbose: true,
-					dry: false,
-					exclude: ['.htaccess']
-				}),
-				extract.www,
-				new webpack.ProvidePlugin({
-					$: 'jquery',
-					jQuery: 'jquery',
-					'window.jQuery': 'jquery'
-				}),
-				function() {
-					this.plugin("done", function(stats) {
+                fs.writeFileSync(
+                    path.resolve(__dirname, 'webpack.php'),
+                    "<?php return array('hash' => '" + stats.hash + "') ?>"
+                );
 
-						fs.writeFileSync(
-							path.join(__dirname, 'webpack.php'),
-							"<?php return array('hash' => '" + stats.hash + "') ?>"
-						);
-
-					});
-				},
-				new WebpackBuildNotifierPlugin({
-				  title: "Build"
-				})
-			] : [
-				new CleanWebpackPlugin(['bundles/*.*'], {
-					root: path.join(__dirname, "assets/"),
-					verbose: true,
-					dry: false,
-					exclude: ['.htaccess']
-				}),
-				new webpack.DefinePlugin({
-					'process.env': {
-						'NODE_ENV': NODE_ENV
-					}
-				}),
-				new webpack.ProvidePlugin({
-					$: 'jquery',
-					jQuery: 'jquery',
-					'window.jQuery': 'jquery'
-				}),
-				new webpack.LoaderOptionsPlugin({
-					minimize: true,
-					debug: false
-				}),
-				new webpack.optimize.UglifyJsPlugin({
-					beautify: false,
-					mangle: {
-						screw_ie8: true,
-						keep_fnames: true
-					},
-					compress: {
-						screw_ie8: true
-					},
-					comments: false
-				}),
-				extract.www,
-				function() {
-					this.plugin("done", function(stats) {
-
-						fs.writeFileSync(
-							path.join(__dirname, 'webpack.php'),
-							"<?php return array('hash' => '" + stats.hash + "') ?>"
-						);
-
-					});
-				}
-			]
-	})
-]
+            });
+        },
+        new WebpackBuildNotifierPlugin({
+          title: "Build"
+        })
+    ]
+};
