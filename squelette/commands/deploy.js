@@ -141,6 +141,8 @@ function deployEnd() {
     	}
 
 		remote_cp('apps/v' + deploy.remote.latest_version + '/data', deploy.remote._version_path + '/data');
+		remote_cp('apps/v' + deploy.remote.latest_version + '/docs', deploy.remote._version_path + '/docs');
+		
 		propel_remote('migrate');
 		composer_remote('dump-autoload -o');
 
@@ -153,6 +155,7 @@ function deployEnd() {
 		}
 
 		scp('./data', deploy.remote._version_path + '/data');
+		scp('./docs', deploy.remote._version_path + '/docs');
 
     }
 

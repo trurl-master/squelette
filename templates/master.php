@@ -16,8 +16,8 @@
 		$custom = $meta->getCustom();
 
 		if (isset($custom['opengraph'])) {
-			foreach ($custom['opengraph'] as $key => $value) {
-				echo '<meta property="', $key, '" content="', $value, '">';
+			foreach ($custom['opengraph'] as $item) {
+				echo '<meta property="', $item['key'], '" content="', $item['value'], '">';
 			}
 		}
 

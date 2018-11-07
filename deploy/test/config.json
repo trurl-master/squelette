@@ -4,6 +4,7 @@
         "server": "server.address.tld",
         "path": "/path/to/project/on/server/",
         "latest_version": false,
+        "copy_db": true,
         "root_htaccess": {
             "filename": "deploy.htaccess",
             "site": "domain.tld"

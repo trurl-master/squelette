@@ -18,9 +18,9 @@
     "waypoints": "^4.0.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "chalk": "^2.3.2",
     "clean-webpack-plugin": "^0.1.19",
@@ -47,7 +47,10 @@
     "squelette": "./squelette/squelette.js",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "diff": "npm run squelette diff",
+    "migrate": "npm run squelette migrate",
+    "refresh-models": "npm run squelette refresh db-model"
   },
   "author": "Ivan Galiatin",
   "license": "ISC"

@@ -55,6 +55,22 @@ class App
 
     }
 
+    public static function alternateUrl($lang)
+    {
+        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/";
+
+        $url .= $lang . '/';
+
+        $url .= implode('/', Request::getRequest());
+
+        $qs = Request::getQueryString();
+
+        if ($qs !== false) {
+            $url .= '?' . $qs;
+        }
+
+        return $url;
+    }
 
     public static function cfg($key, $default = NULL) {
         return isset(self::$config[$key]) ? self::$config[$key] : $default;

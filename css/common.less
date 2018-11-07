@@ -4,6 +4,7 @@
 @assets: '/@{assets_rpath}';
 @img_rpath: '@{assets_rpath}img/';
 @img: '@{assets}img/';
+@fonts: '@{assets}fonts/';
 
 
 // Colors
@@ -31,6 +32,10 @@
 @height_mac: 900px;
 @width_fullhd: 1920px;
 @height_fullhd: 1080px;
+
+// up
+@width_mac_plus_one: (@width_mac + 1px);
+@width_tablet_plus_one: (@width_tablet + 1px);
 @width_phone_plus_one: (@width_phone + 1px);
 
 //
@@ -47,10 +52,96 @@
 // @wide_and_narrow: ~'screen and (min-width: @{width_tablet}) and (max-height: 700px)';
 @nadezhdas_calculator: ~'screen and (max-height: 650px)';
 
+
+
 //
-.content_block(@width_multiplier: 1) {
+.arrow_top(@size, @color) {
+
+	position: relative;
+	// background: @color;
+
+	&:after {
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+		border-color: rgba(255, 255, 255, 0);
+		border-bottom-color: @color;
+		border-width: @size;
+		margin-left: -@size;
+	}
+}
+
+.arrow_right(@size, @color) {
+
+	position: relative;
+	// background: @color;
+
+	&:after {
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+		border-color: rgba(255, 255, 255, 0);
+		border-left-color: @color;
+		border-width: @size;
+		margin-top: -@size;
+	}
+}
+
+.arrow_bottom(@size, @color) {
+
+	position: relative;
+	// background: @color;
+
+	&:after {
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+		border-color: rgba(255, 255, 255, 0);
+		border-top-color: @color;
+		border-width: @size;
+		margin-left: -@size;
+	}
+}
+
+.arrow_left(@size, @color) {
+
+	position: relative;
+	// background: @color;
+
+	&:after {
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+		border-color: rgba(255, 255, 255, 0);
+		border-right-color: @color;
+		border-width: @size;
+		margin-top: -@size;
+	}
+}
+
+.arrow_position(@t, @r, @b, @l) {
+	&:after {
+		top: @t;
+		right: @r;
+		bottom: @b;
+		left: @l;
+	}
+}
+.content_block(@width: @s_main) {
 	width: 100%;
-	max-width: @s_main * @width_multiplier;
+	max-width: @width;
 	padding-left: @s_hpadding;
 	padding-right: @s_hpadding;
 	margin-left: auto;
@@ -105,6 +196,26 @@
   vertical-align: middle;
 }
 
+//
+.trbl(@top: 0, @right: 0, @bottom: 0, @left: 0) {
+	top: @top;
+	right: @right;
+	bottom: @bottom;
+	left: @left;
+}
+
+// clearfix
+.group:before,
+.group:after {
+  content: "";
+  display: table;
+}
+.group:after {
+  clear: both;
+}
+.group {
+  zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+}
 
 
 // Fonts

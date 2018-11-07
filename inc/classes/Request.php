@@ -6,6 +6,7 @@ Class Request
 {
 
     private static $request = [];
+    private static $query_string;
     private static $lang;
 
     public static function init()
@@ -13,19 +14,28 @@ Class Request
         // parse url
         $request = explode('?', rawurldecode($_SERVER['REQUEST_URI']));
         self::$request = explode('/', trim($request[0], '/'));
+        self::$query_string = isset($request[1]) ? $request[1] : false;
 
         if (\App::cfg('language_in_path')) {
             self::$lang = array_shift(self::$request);
         }
     }
 
-    //
     public static function getLang()
     {
         return self::$lang;
     }
 
-    //
+    public static function getRequest()
+    {
+        return self::$request;
+    }
+
+    public static function getQueryString()
+    {
+        return self::$query_string;
+    }
+
     public static function setPathMax($max)
     {
         if (isset(self::$request[$max])) {

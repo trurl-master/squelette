@@ -83,13 +83,9 @@ module.exports = {
         path: path.resolve(__dirname, "assets/bundles/"),
         filename: 'bundle.[name].[hash].js'
     },
+    devtool: "source-map",
     module: {
         rules: [
-            // {
-            //     test: /\.jsx?$/,
-            //     exclude: /(node_modules|bower_components)/,
-            //     use: loadersConfig.babel
-            // },
             {
                 test: /\.jsx$/,
                 exclude: /(node_modules|bower_components)/,
@@ -124,8 +120,6 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '../bundles/bundle.[name].[hash].css',
             chunkFilename: '../bundles/[id].css'
-            // filename: "[name].css",
-            // chunkFilename: "[id].css"
         }),
         new webpack.ProvidePlugin({
             $: 'jquery',

@@ -10,7 +10,7 @@ trait ResourceSet
 
     public function resRootPath()
     {
-        return App::cfg('root') . App::cfg('assets') . 'docs/' . $this::RESOURCE_PATH . '/';
+        return App::cfg('root') . '/docs/' . $this::RESOURCE_PATH . '/';
     }
 
     public function resPath()
@@ -26,7 +26,7 @@ trait ResourceSet
 
     public function resSrcRootPath()
     {
-        return App::cfg('assets') . 'docs/' . $this::RESOURCE_PATH . '/';
+        return '/docs/' . $this::RESOURCE_PATH . '/';
     }
 
     public function resSrcPath()
@@ -38,6 +38,10 @@ trait ResourceSet
         }
 
         return $this->resSrcRootPath() . $resid . '/';
+    }
+
+    public function hasResource($name) {
+        return file_exists($this->resPath() . $name);
     }
 
     public function updateRes()
