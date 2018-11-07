@@ -119,6 +119,8 @@ module.exports = function (/*namespace, */options) {
     cli('composer dump-autoload -o');
 
     //
-    log('message', 'please edit data/main.sqlite to fill out meta data entries');
+    if (options.createDb) {
+        log('message', 'please edit data/main.sqlite to fill out meta data entries');
+    }
 
 }
