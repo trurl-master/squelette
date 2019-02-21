@@ -2,6 +2,7 @@
 
 use Sirius\Validation\Validator;
 use \Squelette\UserAuth;
+use \Squelette\Request;
 use \Squelette\Respond;
 
 if (!UserAuth::isSignedin() || !UserAuth::getUser()->isAdmin()) {
@@ -11,7 +12,7 @@ if (!UserAuth::isSignedin() || !UserAuth::getUser()->isAdmin()) {
 
 function getResource()
 {
-    $classname = '\\Yournamespace\\' . ucwords($_POST['table'], '_') . 'Query';
+    $classname = '\\Yournamespace\\' . str_replace('_', '', ucwords($_POST['table'], '_')) . 'Query';
 
     $resource = $classname::create()->findPK($_POST['id']);
 
@@ -28,8 +29,15 @@ $validator = new Validator();
 $validator->add('table', 'inlist', ['list' => ['news']]);
 $validator->add('id', 'required | integer');
 
+
+$task = Request::path(2, null);
+
+if ($task === null) {
+	$task = $_POST['task'];
+}
+
 //
-switch ($_POST['task']) {
+switch ($task) {
 
 	case 'upload-file':
 
@@ -47,15 +55,54 @@ switch ($_POST['task']) {
         }
 
 		try {
-			$resource->uploadFile($options);
+			$filename = $resource->uploadFile($options);
 		} catch (Exception $e) {
 			Respond::fail(['message' => $e->getMessage()]);
 		}
 
         $resource->updateRes();
+        
+        Respond::success([
+			'resid' => $resource->getResid(),
+			'filename' => $filename
+		]);
+        
+		break;
 
-        Respond::success(['resid' => $resource->getResid()]);
+	case 'upload-image':
 
+		if (!$validator->validate($_POST)) {
+			print_r($validator->getMessages());
+			Respond::fail();
+		}
+
+        $resource = getResource();
+
+        $options = [];
+
+        if (isset($_POST['filename'])) {
+            $options['filename'] = $_POST['filename'];
+        }
+
+        if (isset($_POST['preset'])) {
+            $options['preset'] = $_POST['preset'];
+		} else {
+			$options['preset'] = 'main';
+		}
+
+		try {
+			$filename = $resource->uploadImage($options);
+		} catch (Exception $e) {
+			Respond::fail(['message' => $e->getMessage()]);
+		}
+
+        $resource->updateRes();
+        
+        Respond::success([
+			'resid' => $resource->getResid(),
+			'filename' => $filename
+		]);
+        
 		break;
 
 	case 'remove':
@@ -67,12 +114,27 @@ switch ($_POST['task']) {
 			Respond::fail();
         }
 
-        $resource = getResource();
-
+		$resource = getResource();
+		        
         $resource->removeFiles($_POST['filenames']);
 
         Respond::success();
 
+		break;
+
+	case 'update':
+    
+		if (!$validator->validate($_POST)) {
+			print_r($validator->getMessages());
+			Respond::fail();
+		}
+
+		$resource = getResource();
+
+		$resource->updateRes();
+        
+        Respond::success(['resid' => $resource->getResid()]);
+    
 		break;
 
 	default: App::to404();
